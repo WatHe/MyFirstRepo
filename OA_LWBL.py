@@ -1,67 +1,126 @@
-#coding=gbk
+#coding=u8
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.keys import Keys
 import time
+import datetime
 
 
-#test_log = open("C:/Users/hyasn/Desktop/test_log.txt","a+")
-browser = webdriver.Chrome("E:\SetupMenu\Anaconda\chromedriver.exe") # Get local session of Chrome
-browser.get("http://19.16.104.13:8080/default/index/indexBlue/index.jsp#") # Load page
-assert "¹ã¶«Ê¡¹úÍÁ×ÊÔ´ÌüÕşÎñ°ì¹«ÏµÍ³" in browser.title
+###æ‰“å¼€æµè§ˆå™¨å¹¶è¿›å…¥OAç™»å½•é¡µé¢###
+browser = webdriver.Chrome()
+origin_window = browser.current_window_handle
+browser.get("http://172.16.101.18:8080/default/index/indexBlue/index.jsp#") 
+###ç™»å½•ç”¨æˆ·###
+username = "wt"  
+password = "000000\n"	
+input_username = browser.find_element_by_name("userId") 
+input_username.send_keys(username)	
+input_password = browser.find_element_by_name("password")
+input_password.send_keys(password)	
+###å‘èµ·ç”¨ç« ç”³è¯·###
+browser.find_element_by_class_name("g-pt-jgsw").click()
+time.sleep(5)
+browser.find_element_by_class_name("g-pt-yzgl").click()
+time.sleep(5)
+browser.find_element_by_class_name("g-pt-yzsq").click()
+time.sleep(5)
 
-username = "cxh"  #ÓÃ»§Ãû
-password = "000000"	#ÓÃ»§ÃÜÂë
-input_username = browser.find_element_by_name("userId") # Í¨¹ıID»ñÈ¡ÓÃ»§ÃûÊäÈë¿ò
-input_username.send_keys(username)	#ÊäÈëÓÃ»§Ãû
-input_password = browser.find_element_by_name("password")	#Í¨¹ıÃû³Æ»ñÈ¡ÃÜÂëÊäÈë¿ò
-input_password.send_keys(password)	#ÊäÈëÃÜÂë
-
-input_submit = browser.find_element_by_class_name("loginBtn")	#Í¨¹ıÃû³Æ»ñÈ¡µÇÂ¼°´Å¥
-input_submit.click()	#µ¥»÷µÇÂ¼
-
-#assert "×¢Ïú" in browser.find_element_by_class_name("login_out").title
-#print(username+"µÇÂ¼³É¹¦")
-#test_log.write(username + "µÇÂ¼³É¹¦\n")
-
-# µã»÷¹«ÎÄ¹ÜÀí
-gwbl = browser.find_element_by_class_name("g-pt-gwbl")
-gwbl.click()
-
-# µã»÷·¢Æğ¹«ÎÄ										
-fqgw = browser.find_element_by_class_name("g-pt-fqgw")
-fqgw.click()
-
-# µã»÷À´ÎÄ°ìÀí
-lwbl = browser.find_element_by_class_name("g-pt-lwbl")
-lwbl.click()
-
-#ÇĞ»»±êÇ©Ò³
-# browser.switch_to.window("À´ÎÄ°ìÀí")
-for handle in browser.window_handles:
-   browser.switch_to.window(handle)
+def switch_window(browser):
+	for handle in browser.window_handles:
+   		browser.switch_to.window(handle)
    #print(browser.title)
-
-inputBt = browser.find_element_by_name("lwdj.bt")
-inputBt.send_keys("À´ÎÄ±êÌâ")  
-time.sleep(10) 
-# ÉÏ´«¸½¼ş
-uploadFile = browser.find_element_by_class_name("diyBtnAdd")
-uploadFile.click()
-time.sleep(10)
-# Ñ¡ÔñÎÄ¼ş
-pickfile = browser.find_element_by_id("picker")
-pickfile.click()
-
-#time.sleep(0.2) # Let the page load, will be added to the API
-#µÇ³ö
-#browser.get("http://172.16.101.18:8080/default/coframe/auth/login/login.jsp")	#µÇ³ö
-#print(username+"µÇ³ö")
-#test_log.write(username + "µÇ³ö\n")
-
-#test_log.close()
-#try:
-#    browser.find_element_by_xpath("//a[contains(@href,'http://seleniumhq.org')]")
-#except NoSuchElementException:
-#    assert 0, "can't find seleniumhq"
+switch_window(browser)
 #browser.close()
+
+yzsq_name = "ç”¨ç« ç”³è¯·"+datetime.datetime.now().strftime('%m%d%H%M')
+#yzsqbt = "ç”¨ç« ç”³è¯·"+time.strftime('%m%d%H%M',time.localtime(time.time()))
+browser.find_element_by_name("yzsq.bt").send_keys(yzsq_name)
+browser.find_element_by_name("yzsq.yznr").send_keys("æ— ")
+#å…¬ç« ç±»å‹ä¸‹æ‹‰
+browser.find_element_by_xpath("//table[@class='formTable baseInfoTable']/tbody/tr[3]//input[@class='mini-buttonedit-input']").click()
+#é€‰æ‹©å…ç« 
+browser.find_element_by_xpath("//table[@class='mini-listbox-items']/tbody//tr[@index='1']").click()
+'''
+#æ‰“å¼€é™„ä»¶ä¸Šä¼ 
+browser.find_element_by_class_name("diyBtnAdd").click()
+#time.sleep(10)
+#åˆ‡æ¢è‡³é™„ä»¶ä¸Šä¼ çª—å£
+browser.switch_to.frame(browser.find_element_by_xpath("//div[@class='mini-panel-viewport']//iframe"))
+#ç‚¹å‡»é€‰æ‹©æ–‡ä»¶
+#browser.find_element_by_id("picker").click()
+browser.find_element_by_name("file").send_keys("E:\ä¸‡ç‰©\æ”¿åŠ¡ç³»ç»Ÿæ‰€æœ‰æ–‡ä»¶\OAç³»ç»Ÿæ–‡æ¡£åˆé›†\æµ‹è¯•è„šæœ¬åŠæµ‹è¯•ç»“æœ\æµ‹è¯•æ–‡æœ¬txt.txt")
+browser.find_element_by_id("btnUpload").click()
+#å…³é—­é™„ä»¶ä¸Šä¼ 
+browser.switch_to_default_content()
+browser.find_element_by_class_name("mini-tools-close").click()
+'''
+#
+#æäº¤è¡¨å•
+#browser.find_element_by_class_name("g-btn-save").click()
+browser.find_element_by_class_name("g-btn-submit").click()
+time.sleep(5)
+#åˆ‡æ¢è‡³iframe
+browser.switch_to.frame(browser.find_element_by_xpath("//div[@class='mini-panel-body']/iframe"))
+browser.find_element_by_link_text("ç¡®å®š").click()
+#browser.switch_to_default_content()
+
+#åˆ‡æ¢ç”¨æˆ·
+browser.switch_to.window(origin_window)
+
+def switch_user(username,browser):
+	#for handle in browser.window_handles:
+		#browser.switch_to.window(handle)
+	browser.get("http://172.16.101.18:8080/default/coframe/auth/login/login.jsp")
+	browser.find_element_by_name("userId").send_keys(username)	
+	browser.find_element_by_name("password").send_keys("000000\n")
+
+switch_user("xjh",browser)
+
+##################################################
+###å¤„å®¤å®¡æ ¸###
+#è¿›å…¥å·¥ä½œä¸­å¿ƒ
+browser.find_element_by_class_name("g-pt-gzzx").click()
+#æœç´¢æ¡ˆå·
+browser.switch_to.frame(browser.find_element_by_xpath("//div[@id='tabPage_dbj']/iframe"))
+browser.find_element_by_id("search-input").send_keys(yzsq_name)
+browser.find_element_by_class_name("search-btn").click()
+time.sleep(3)
+#è¿›å…¥æ¡ˆå·
+#browser.find_element_by_xpath("//table[@id='resultList']//a[@title=yzsq_name]").click()#æœ‰é—®é¢˜
+browser.find_element_by_link_text(yzsq_name).click()
+time.sleep(5)
+#åˆ‡æ¢è‡³æ¡ˆå·é¡µé¢
+switch_window(browser)
+#åŒæ„å¹¶æäº¤å®¡æ ¸
+browser.switch_to.frame(browser.find_element_by_xpath("//div[@class='mini-tabs-body mini-tabs-hideOverflow']/iframe"))
+browser.find_element_by_id("suggestArea").send_keys("åŒæ„")
+browser.find_element_by_id("submit").click()
+time.sleep(5)
+browser.switch_to_default_content()
+browser.switch_to.frame(browser.find_element_by_xpath("//div[@class='mini-panel-body']/iframe"))
+browser.find_element_by_id("multSelect0").click()
+browser.find_element_by_link_text("ç¡®å®š").click()
+#åˆ‡æ¢ç”¨æˆ·
+browser.switch_to.window(origin_window)
+switch_user("cgr",browser)
+###å…é•¿ç­¾æ‰¹###
+browser.find_element_by_class_name("g-pt-gzzx").click()
+browser.switch_to.frame(browser.find_element_by_xpath("//div[@id='tabPage_qpj']/iframe"))
+browser.find_element_by_id("search-input").send_keys(yzsq_name)
+browser.find_element_by_class_name("search-btn").click()
+time.sleep(3)
+browser.find_element_by_link_text(yzsq_name).click()
+time.sleep(5)
+switch_window(browser)
+'''
+for handle in browser.window_handles:
+	browser.switch_to.window(handle)
+'''
+browser.switch_to.frame(browser.find_element_by_xpath("//div[@class='mini-tabs-body mini-tabs-hideOverflow']/iframe"))
+browser.find_element_by_id("suggestArea").send_keys("åŒæ„")
+browser.find_element_by_id("submit").click()
+time.sleep(5)
+browser.switch_to_default_content()
+browser.switch_to.frame(browser.find_element_by_xpath("//div[@class='mini-panel-body']/iframe"))
+#browser.find_element_by_id("multSelect0").click()
+browser.find_element_by_link_text("ç¡®å®š").click()
